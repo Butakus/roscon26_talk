@@ -1,0 +1,10 @@
+# Workspaces and environments created by the demos
+demos/*/src/
+demos/*/build/
+demos/*/install/
+demos/*/log/
+**/.pixi/*
+!**/.pixi/config.toml
+.venv/
+*.log
+old/

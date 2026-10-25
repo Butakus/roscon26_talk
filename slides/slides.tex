@@ -1,0 +1,370 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{hyperref}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+\else
+  % XeTeX (tectonic, que es lo que usa `pixi run slides`) o LuaTeX: Unicode nativo.
+  \usepackage{fontspec}
+\fi
+\usepackage[spanish]{babel}
+\usepackage{csquotes}
+\usepackage{tribhuvan}
+
+\usepackage{amssymb,xcolor,booktabs,graphicx,listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{qrcode}
+
+\newcommand{\repourl}{https://github.com/butakus/roscon26_talk}
+
+\author[Francisco Miguel Moreno]{%
+Francisco Miguel Moreno\\
+\texttt{\footnotesize franciscom.moreno@urjc.es}\\[0.5em]
+{\footnotesize Intelligent Robotics Lab · Universidad Rey Juan Carlos}%
+}
+\title[¿Hay vida más allá de Ubuntu?]{¿Hay vida más allá de Ubuntu?}
+\subtitle{Guía de supervivencia para desarrollar en ROS~2 desde tu sistema favorito}
+\institute[ROSCon España 2026]{}
+\date{ROSCon España 2026 · Valencia}
+\setbeamertemplate{navigation symbols}{}
+
+\definecolor{halfgray}{gray}{0.55}
+\definecolor{okgreen}{rgb}{0,0.5,0}
+\definecolor{nored}{rgb}{0.7,0,0}
+\newcommand{\si}{{\color{okgreen}\checkmark}}
+\newcommand{\no}{{\color{nored}$\times$}}
+\newcommand{\parcial}{{\color{tu-orange!85!black}$\sim$}}
+
+% Caja de personaje: nombre, perfil y restricción
+\newcommand{\perfil}[3]{\hyphenpenalty=10000\exhyphenpenalty=10000\textbf{#1}\\[2pt]{\footnotesize #2}\\[3pt]{\scriptsize\color{halfgray} #3}}
+
+
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true}
+
+% Referencia al pie de una slide
+\newcommand{\referencia}[1]{\vfill{\raggedright\scriptsize\color{halfgray} #1\par}}
+
+% Mensaje destacado (sustituye a un block sin título, que deja una barra vacía)
+\newtcolorbox{mensaje}{colback=tu-blue!8, colframe=tu-blue, boxrule=0.6pt, arc=1.5mm,
+  halign=center, fontupper=\normalsize, left=2mm, right=2mm, top=1mm, bottom=1mm}
+
+\tikzset{
+  persona/.style={draw=tu-blue, fill=tu-blue!6, rounded corners=3pt, line width=0.6pt,
+                  minimum width=4.5cm, minimum height=2.9cm, align=center, text width=4.3cm},
+  capa/.style={draw=tu-blue, fill=tu-blue!8, rounded corners=2pt, line width=0.5pt,
+               minimum width=7.5cm, minimum height=0.75cm, align=left, text width=7.2cm},
+}
+
+\begin{document}
+
+%-------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}{``Instala Ubuntu y olvídate''}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Plataforma} & \textbf{REP-2000} \\
+\midrule
+Ubuntu & Tier 1 \\
+Windows & Tier 1 \\
+RHEL & Tier 2 \\
+macOS, Debian & Tier 3 \\
+Otras distros\ldots & {\color{halfgray} no aparecen} \\
+\bottomrule
+\end{tabular}
+\column{0.48\textwidth}
+\begin{itemize}
+  \item Fuera de Ubuntu, en la práctica casi nada funciona a la primera.
+  \item Y en Ubuntu, \lstinline|apt| solo tiene \textbf{la última versión} publicada: reinstalar dentro de 6 meses te da otro ROS.
+  \item Aunque RHEL es Tier 2, sus RPM no sirven en Fedora.
+\end{itemize}
+\end{columns}
+\vfill
+\begin{mensaje}
+¿Qué opciones hay para \textbf{desarrollar} en ROS~2 fuera de Ubuntu?
+\end{mensaje}
+\referencia{REP-2000, plataformas de Kilted (Rolling apunta a las mismas).}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}{Conoce a\ldots}
+\centering
+\begin{tikzpicture}[node distance=0.2cm]
+\node[persona] (paco) {\perfil{Paco}{Mantiene proyectos open source de ROS~2 y no quiere líos: usa Ubuntu.}{tiene lo que usa todo el mundo}};
+\node[persona, right=of paco] (sara) {\perfil{Sara}{Empresa grande. Por seguridad, Linux prohibido y Windows sin admin.}{Windows sin admin ni VMs}};
+\node[persona, right=of sara] (lucia) {\perfil{Lucía}{Viene del desarrollo web: \texttt{npm install} y a funcionar. Su Mac es su herramienta.}{macOS; quiere algo tipo npm}};
+\node[persona, below=of paco, xshift=2.35cm] (javi) {\perfil{Javi}{Usa ``Arch, BTW''. Compila su kernel y lo quiere todo en la última versión.}{una distro que ROS ni menciona}};
+\node[persona, right=of javi] (marta) {\perfil{Marta}{Usa Bluefin, una Fedora inmutable: el sistema base es de solo lectura.}{nada se instala en el sistema}};
+\end{tikzpicture}
+\end{frame}
+
+%-------------------------------------------------
+% \begin{frame}[fragile]{Un proyecto real, en todos los entornos}
+% \begin{columns}[T]
+% \column{0.48\textwidth}
+% \textbf{EasyNavigation}
+% \begin{enumerate}
+%   \item \lstinline|colcon build|
+%   \item \lstinline|colcon test| (más de 1700 tests)
+%   \item \lstinline|system_main| con los plugins \texttt{Dummy*}: sin robot, sin simulador
+%   \item Comprobar que el sistema llega a \texttt{active}
+% \end{enumerate}
+% \vspace{0.5em}
+% Mismo script, mismos parámetros: cambia \textbf{solo cómo entras en el entorno}.
+% \column{0.5\textwidth}
+% \begin{terminal}
+% $ ros2 node list
+% /controller_node
+% /localizer_node
+% /maps_manager_node
+% /planner_node
+% /recovery_node
+% /sensors_node
+% /system_node
+% $ ros2 lifecycle get /system_node
+% active [3]
+% \end{terminal}
+% \end{columns}
+% \end{frame}
+
+%-------------------------------------------------
+\begin{frame}{El camino clásico / recomendado}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{apt en Ubuntu}
+\begin{itemize}
+  \item El camino documentado y probado por la buildfarm.
+  \item Cero compilación de ROS.
+  \item Pero: una Ubuntu concreta por distro de ROS, y sin fijar versiones.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{alertblock}{Desde fuentes en tu sistema}
+Ejemplo en Fedora 44:
+\begin{itemize}
+  \item 150 paquetes de ROS~2 (solo lo necesario).
+  \item Múltiples dependencias de \texttt{dnf}; rosdep con reglas incompletas.
+  \item Python 3.14, GCC 16, CMake 4.3: más nuevos que cualquier Tier 1.
+\end{itemize}
+\textbf{Posible, pero no recomendado.}
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}[fragile]{Contenedores: Ubuntu, pero dentro de una caja}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Docker / Podman + devcontainer}
+\begin{itemize}
+  \item Ubuntu + ROS por apt + \texttt{rosdep}, en una imagen.
+  \item El código se monta desde el host.
+  \item Windows (WSL2) y macOS, con una VM de por medio.
+\end{itemize}
+\vspace{0.3em}
+{\small Imagen 5,3~GB · build 2,5~min}
+\column{0.5\textwidth}
+\textbf{Distrobox}
+\begin{terminal}
+distrobox assemble create
+distrobox enter easynav-rolling
+rosdep install --from-paths src -y
+colcon build
+\end{terminal}
+\begin{itemize}
+  \item Mismo usuario, \texttt{\$HOME}, red, GUI y USB.
+  \item Solo Linux.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}{Desde fuentes, pero dentro de Docker}
+\begin{columns}[c]
+\column{0.55\textwidth}
+\centering
+\begin{tikzpicture}[node distance=0.12cm]
+\node[capa, fill=gray!10, draw=gray] (base) {\texttt{osrf/ros2:devel}\hfill{\scriptsize Herramientas, sin ROS}};
+\node[capa, above=of base] (ros) {\texttt{ros2\_ws}\hfill{\scriptsize ROS~2 rolling, 169 paquetes}};
+\node[capa, above=of ros] (under) {\texttt{underlay\_ws}\hfill{\scriptsize Dependencias}};
+\node[capa, above=of under, fill=orange!10, draw=orange!70!black] (over) {\texttt{overlay\_ws}\hfill{\scriptsize EasyNavigation}};
+\end{tikzpicture}
+\vspace{0.5em}
+
+{\small \texttt{ros2.repos} recortado con \lstinline|colcon list --packages-skip-up-to|}
+\column{0.43\textwidth}
+\begin{itemize}
+  \item Todo ROS~2 compilado desde fuentes, sobre Ubuntu y dentro de la imagen.
+  \item Una imagen multi-etapa para \textbf{desarrollo} (devcontainer) y para \textbf{CI}.
+  \item 15~min desde cero; ROS~2 en 2,5~min con ccache.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}[fragile]{Pixi: un lockfile, tres sistemas operativos}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{filelisting}
+[workspace]
+channels = ["robostack-rolling", "conda-forge"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
+
+[dependencies]
+ros-rolling-rclcpp = "*"
+
+[tasks]
+build = "colcon build"
+\end{filelisting}
+\begin{terminal}
+pixi install && pixi run demo
+\end{terminal}
+\column{0.42\textwidth}
+\begin{itemize}
+  \item Sin root, sin tocar el sistema.
+  \item ROS~2 como paquetes conda (RoboStack).
+  \item \lstinline|pixi.lock| para las tres plataformas.
+  \item 1,5~min de setup.
+\end{itemize}
+\vspace{0.3em}
+\end{columns}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}[fragile]{Conan: ROS~2 como una dependencia C++ más}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{filelisting}
+[requires]
+ros-kilted/2026.06.17
+
+[options]
+ros-kilted/*:variant=desktop
+\end{filelisting}
+\begin{itemize}
+  \item ROS~2 en tu proyecto C++, igual que Boost u OpenCV.
+  \item Sin \texttt{rosdep} ni \texttt{apt}, en Linux, macOS y Windows.
+  \item Binarios compartibles en el servidor de la empresa.
+\end{itemize}
+{\small Instalación ${\sim}$15~min · build 2~min}
+\column{0.46\textwidth}
+\begin{block}{Un proyecto en maduración}
+\begin{itemize}
+  \item \texttt{ros-conan}: todo ROS~2 en \textbf{una única receta}, con variantes (\texttt{core}, \texttt{base}, \texttt{desktop}\ldots).
+  \item Por ahora, solo \textbf{kilted}.
+  \item Lo que no está en la receta, al workspace.
+\end{itemize}
+\end{block}
+\vspace{0.5em}
+% \begin{mensaje}
+% Ideal si tu proyecto ya usa Conan.
+% \end{mensaje}
+\end{columns}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}[fragile]{Fijar versiones: lo que apt no puede hacer}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\textbf{Desde fuentes}
+\begin{filelisting}
+yaets:
+  type: git
+  url: .../yaets.git
+  version: 1.2.0
+\end{filelisting}
+\column{0.32\textwidth}
+\textbf{Pixi}
+\begin{filelisting}
+- conda: .../rclcpp-
+    33.0.4-...conda
+  sha256: 7363917...
+\end{filelisting}
+\column{0.32\textwidth}
+\textbf{Conan}
+\begin{filelisting}
+ros-kilted/2026.06.17
+  #49b158999daa...
+conan lock create .
+\end{filelisting}
+\end{columns}
+\vfill
+\begin{alertblock}{apt (y las imágenes que se construyen con apt)}
+El repositorio de ROS solo guarda la última versión publicada: \textbf{reconstruir hoy $\neq$ reconstruir dentro de 6 meses.}
+\end{alertblock}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}{Comparativa}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+ & \textbf{apt} & \textbf{Fuentes (Docker)} & \textbf{Contenedor} & \textbf{Distrobox} & \textbf{Pixi} & \textbf{Conan} \\
+\midrule
+Sistemas & Ubuntu & todos $*^1$ & todos $*^1$ & Linux & todos & todos \\
+Sin root & \no & \si & \si & \si & \si & \si \\
+% Setup & 0 min & 15 min & 4 min & 4,5 min & 1,5 min & ${\sim}$15 min $*^2$ \\
+\textbf{Fija versiones} & \no & \si{} \texttt{.repos} & \no{} (apt) & \no{} (apt) & \si{} lock & \si{} lock \\
+Integración con el host & nativa & baja & baja & alta & alta & alta \\
+\bottomrule
+\end{tabular}}
+\referencia{$*^1$ En macOS y Windows, a través de una VM (Docker Desktop, WSL2).\\ $*^2$ Build en conan compilando ROS 2 de fuente.}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}{¿Cuál elijo?}
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+ & \textbf{apt} & \textbf{Contenedor} & \textbf{Distrobox} & \textbf{Docker fuentes} & \textbf{Pixi} & \textbf{Conan} \\
+\midrule
+Paco {\scriptsize\color{halfgray} Ubuntu}  & \si & \si & \si & \si & \si & \parcial \\
+Sara {\scriptsize\color{halfgray} Windows}  & \no & \no & \no & \no & \si & \parcial \\
+Lucía {\scriptsize\color{halfgray} macOS} & \no & \parcial & \no & \parcial & \si & \parcial \\
+Javi {\scriptsize\color{halfgray} Arch}  & \no & \si & \si & \si & \si & \parcial \\
+Marta {\scriptsize\color{halfgray} Bluefin} & \no & \si & \si & \si & \si & \parcial \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.4em}
+{\scriptsize\color{halfgray} \si{} encaja \quad \parcial{} con matices (VM, USB, GUI, solo kilted) \quad \no{} no encaja (WSL2 y Docker Desktop piden admin)}
+\vfill
+Casi todos tienen \textbf{más de una} opción; Pixi es la única que encaja con los cinco.
+\vfill
+\begin{mensaje}
+Si necesitas reproducibilidad, necesitas un \textbf{lockfile} (o fuentes fijadas).
+\end{mensaje}
+\referencia{Bonus: Nix (nix-ros-overlay), reproducible y con lockfile.}
+\end{frame}
+
+%-------------------------------------------------
+\begin{frame}{¿Preguntas?}
+\begin{columns}[c]
+\column{0.6\textwidth}
+\Large ¿Hay vida más allá de Ubuntu?
+\vspace{1em}
+
+\normalsize
+Demos, scripts y slides:\\[0.3em]
+\small\url{\repourl}
+\vspace{1em}
+
+\normalsize
+Francisco Miguel Moreno\\
+\texttt{\small franciscom.moreno@urjc.es}
+\column{0.35\textwidth}
+\centering
+\qrcode[height=3.5cm]{\repourl}
+\end{columns}
+\end{frame}
+
+\end{document}

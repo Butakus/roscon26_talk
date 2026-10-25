@@ -1,0 +1,46 @@
+# EasyNav with the Dummy* plugins shipped in the core packages.
+# No robot, no simulator and no map: enough to check that the whole system
+# builds, loads its plugins and reaches the ACTIVE state in every environment.
+controller_node:
+  ros__parameters:
+    use_sim_time: false
+    controller_types: [dummy]
+    dummy:
+      plugin: easynav_controller/DummyController
+
+localizer_node:
+  ros__parameters:
+    use_sim_time: false
+    localizer_types: [dummy]
+    dummy:
+      plugin: easynav_localizer/DummyLocalizer
+
+maps_manager_node:
+  ros__parameters:
+    use_sim_time: false
+    map_types: [dummy]
+    dummy:
+      plugin: easynav_maps_manager/DummyMapsManager
+
+planner_node:
+  ros__parameters:
+    use_sim_time: false
+    planner_types: [dummy]
+    dummy:
+      plugin: easynav_planner/DummyPlanner
+
+recovery_node:
+  ros__parameters:
+    use_sim_time: false
+    recovery_manager:
+      plugin: easynav_recovery/DummyRecoveryManager
+
+# No sensors: an empty list ("sensors: []") is not a valid ROS parameter value
+sensors_node:
+  ros__parameters:
+    use_sim_time: false
+
+system_node:
+  ros__parameters:
+    use_sim_time: false
+    use_real_time: false

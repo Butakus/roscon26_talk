@@ -1,0 +1,105 @@
+[workspace]
+name = "easynav-dev-rolling"
+# Generated with:
+#   pixi ros init -d rolling -p linux-64 -p osx-arm64 -p win-64 -c https://prefix.dev/fmrico/irl-rolling
+# then edited by hand (re-apply after running it again):
+#   - vcstool, and the 3 python3-* keys it cannot map (conda-forge names)
+#   - [tasks] and the per-platform activation scripts / COLCON_DEFAULTS_FILE
+# EasyNav's channel first: Pixi takes each package from the first channel that has it
+channels = ["https://prefix.dev/fmrico/irl-rolling", "https://prefix.dev/robostack-rolling", "https://prefix.dev/conda-forge"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
+
+[dependencies]
+# Base ROS dependencies
+ros-rolling-ros-base = "*"
+pkg-config = "*"
+compilers = "*"
+make = "*"
+ninja = "*"
+ros-rolling-ros2cli = "*"
+
+# Build tools
+colcon-common-extensions = "*"
+vcstool = "*"
+
+# Workspace dependencies (common across platforms)
+libboost-devel = "*"
+matplotlib-base = "*"
+openssl = "*"
+pcl = "*"
+pytest = "*"
+ros-rolling-ament-cmake = "*"
+ros-rolling-ament-cmake-gtest = "*"
+ros-rolling-ament-cmake-pytest = "*"
+ros-rolling-ament-copyright = "*"
+ros-rolling-ament-flake8 = "*"
+ros-rolling-ament-index-cpp = "*"
+ros-rolling-ament-index-python = "*"
+ros-rolling-ament-lint-auto = "*"
+ros-rolling-ament-lint-common = "*"
+ros-rolling-ament-pep257 = "*"
+ros-rolling-ament-xmllint = "*"
+ros-rolling-builtin-interfaces = "*"
+ros-rolling-cv-bridge = "*"
+ros-rolling-diagnostic-msgs = "*"
+ros-rolling-geometry-msgs = "*"
+ros-rolling-lifecycle-msgs = "*"
+ros-rolling-nav-msgs = "*"
+ros-rolling-pcl-conversions = "*"
+ros-rolling-pluginlib = "*"
+ros-rolling-rcl-interfaces = "*"
+ros-rolling-rcl-logging-interface = "*"
+ros-rolling-rclcpp = "*"
+ros-rolling-rclcpp-lifecycle = "*"
+ros-rolling-rclpy = "*"
+ros-rolling-rcutils = "*"
+ros-rolling-rosidl-default-generators = "*"
+ros-rolling-rosidl-runtime-py = "*"
+ros-rolling-sensor-msgs = "*"
+ros-rolling-std-msgs = "*"
+ros-rolling-tf2 = "*"
+ros-rolling-tf2-geometry-msgs = "*"
+ros-rolling-tf2-msgs = "*"
+ros-rolling-tf2-ros = "*"
+ros-rolling-vision-msgs = "*"
+vtk-base = "*"
+
+# rosdep keys that pixi-ros could not map (python3-*): same packages on conda-forge
+platformdirs = "*"
+rich = "*"
+typing-extensions = "*"
+
+[target.unix.dependencies]
+# Unix-specific dependencies (Linux and macOS)
+xorg-libx11 = "*"
+xorg-libxext = "*"
+
+[target.linux.dependencies]
+# Platform-specific dependencies for linux
+libgl-devel = "*"
+libopengl-devel = "*"
+
+[tasks]
+setup = {cmd = "mkdir -p src && vcs import --skip-existing --input ../../common/easynav.repos src", description = "Clone EasyNavigation and yaets into src/"}
+build = {cmd = "colcon build", description = "Build the ROS workspace"}
+test = {cmd = "colcon test --packages-select-regex 'easynav.*|yaets' && colcon test-result --verbose", description = "Run the EasyNav tests"}
+run = {cmd = "ros2 run easynav_system system_main --ros-args --params-file ../../common/params/dummy.params.yaml", description = "Run EasyNav with the Dummy* plugins"}
+demo = {cmd = "bash ../../common/scripts/demo.sh", description = "build + test + run (Linux/macOS)"}
+clean = {cmd = "rm -rf build install log", description = "Clean build artifacts (build, install, log directories)"}
+
+[target.win-64.tasks]
+demo = {cmd = "powershell -ExecutionPolicy Bypass -File ../../common/scripts/demo.ps1", description = "build + test + run (Windows)"}
+
+# On activation (pixi shell / pixi run): shared colcon settings, plus the workspace
+# overlay once it has been built. colcon generates a different setup script per platform.
+[target.unix.activation]
+scripts = ["install/setup.sh"]
+
+[target.unix.activation.env]
+COLCON_DEFAULTS_FILE = "$PIXI_PROJECT_ROOT/../../common/colcon_defaults.yaml"
+
+[target.win-64.activation]
+scripts = ["install/setup.bat"]
+
+[target.win-64.activation.env]
+COLCON_DEFAULTS_FILE = "%PIXI_PROJECT_ROOT%\\..\\..\\common\\colcon_defaults.yaml"

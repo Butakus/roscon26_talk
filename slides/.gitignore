@@ -1,0 +1,8 @@
+.pixi/*
+!.pixi/config.toml
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc

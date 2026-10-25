@@ -1,0 +1,13 @@
+# common/colcon_defaults.yaml + what the Conan workspace needs.
+# Loaded through COLCON_DEFAULTS_FILE (see env.sh): plain "colcon build" just works.
+build:
+  symlink-install: true
+  # vision_msgs_rviz_plugins needs Qt headers and EasyNav does not use it
+  packages-skip: [vision_msgs_rviz_plugins]
+  cmake-args:
+    - -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    # easynav_sensors hard-codes CMAKE_BUILD_TYPE=DEBUG, but Conan targets only
+    # carry Release properties: use them for Debug too.
+    - -DCMAKE_MAP_IMPORTED_CONFIG_DEBUG=Release
+test:
+  parallel-workers: 1

@@ -1,0 +1,47 @@
+// navigation2-style devcontainer on top of ROS 2 built from source (see ../Dockerfile).
+// Open demos/01_source_build in VS Code and run "Dev Containers: Reopen in Container".
+// Based on https://github.com/ros-navigation/navigation2/blob/main/.devcontainer/devcontainer.json
+{
+  "name": "EasyNav (ROS 2 from source, nav2-style)",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": "..",
+    "target": "dever"
+  },
+  "runArgs": [
+    "--name=easynav",
+    "--network=host", // DDS discovery with the host
+    "--ipc=host"      // shared memory transport with the host
+    // "--cap-add=SYS_PTRACE", "--security-opt=seccomp=unconfined", // gdb
+    // "--volume=/tmp/.X11-unix:/tmp/.X11-unix", // X11 for GUI tools
+  ],
+  // Only the code you work on is bind-mounted from the host.
+  // build/ install/ log/ live in a volume: fast, and they survive rebuilds.
+  "workspaceFolder": "/opt/overlay_ws/src/EasyNavigation",
+  "workspaceMount": "source=${localWorkspaceFolder}/src/EasyNavigation,target=${containerWorkspaceFolder},type=bind",
+  "mounts": [
+    {"source": "overlay-${devcontainerId}", "target": "/opt/overlay_ws", "type": "volume"},
+    {"source": "ccache-${devcontainerId}", "target": "/tmp/.ccache", "type": "volume"},
+    // shared demo files (demo.sh, dummy params)
+    {"source": "${localWorkspaceFolder}/../../common", "target": "/opt/common", "type": "bind"}
+  ],
+  "containerEnv": {
+    "OVERLAY_MIXINS": "release ccache lld compile-commands",
+    "CCACHE_DIR": "/tmp/.ccache"
+  },
+  // Build the overlay when the container is created and when the sources change
+  "onCreateCommand": "git config --global --add safe.directory '*'",
+  "updateContentCommand": "bash -c 'cd $OVERLAY_WS && . $UNDERLAY_WS/install/setup.sh && colcon build --symlink-install --mixin $OVERLAY_MIXINS'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-iot.vscode-ros",
+        "twxs.cmake"
+      ],
+      "settings": {
+        "clangd.arguments": ["--compile-commands-dir=/opt/overlay_ws/build"]
+      }
+    }
+  }
+}

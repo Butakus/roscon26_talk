@@ -1,0 +1,14 @@
+# Packages removed from ros2_ws before building: only Fast DDS (the default RMW)
+# is built. Zenoh needs a Rust toolchain, Connext needs RTI's SDK and license,
+# Cyclone pulls iceoryx. rmw_implementation picks up whatever RMWs are present.
+rmw_zenoh_cpp
+zenoh_cpp_vendor
+rmw_connextdds
+rmw_connextdds_common
+rmw_connextddsmicro
+rti_connext_dds_cmake_module
+rmw_cyclonedds_cpp
+cyclonedds
+iceoryx_binding_c
+iceoryx_hoofs
+iceoryx_posh

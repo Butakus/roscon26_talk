@@ -1,0 +1,8 @@
+# Shared colcon settings for every demo (export COLCON_DEFAULTS_FILE=<this file>).
+build:
+  symlink-install: true
+  cmake-args:
+    - -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+test:
+  # Same as EasyNav's CI: some node tests are flaky when run in parallel
+  parallel-workers: 1

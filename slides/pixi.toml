@@ -1,0 +1,15 @@
+# Compiles the slides with tectonic (no TeX Live installation needed):
+#   pixi run slides
+[workspace]
+name = "roscon26-slides"
+channels = ["https://prefix.dev/conda-forge"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
+
+[dependencies]
+tectonic = "*"
+
+[tasks.slides]
+cmd = "tectonic -X compile slides.tex"
+inputs = ["slides.tex", "*.sty"]
+outputs = ["slides.pdf"]
+description = "Compile slides.tex to slides.pdf"

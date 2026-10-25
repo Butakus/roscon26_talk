@@ -1,0 +1,21 @@
+# Run the dev container without VS Code (docker compose / podman compose):
+#   docker compose run --rm dev
+# Run from this directory. The whole repository is mounted at /workspaces/roscon26_talk.
+services:
+  dev:
+    build:
+      context: ../..
+      dockerfile: demos/02_containers/Dockerfile
+      args:
+        ROS_DISTRO: rolling
+    image: easynav-dev:rolling
+    volumes:
+      - ../..:/workspaces/roscon26_talk:z
+    working_dir: /workspaces/roscon26_talk/demos/02_containers
+    # DDS discovery with the host (and other containers) works out of the box
+    network_mode: host
+    ipc: host
+    # Podman rootless: keep your UID inside the container so files stay yours
+    userns_mode: keep-id
+    stdin_open: true
+    tty: true

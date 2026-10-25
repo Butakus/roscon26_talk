@@ -1,0 +1,164 @@
+% Beamer theme taken from IntelligentRoboticsLabs/workshop-pixi (slides/tribhuvan.sty)
+\mode<presentation>
+
+% --- Terminal blocks (Ubuntu-like) ---
+% Provides a reusable \begin{terminal} ... \end{terminal} listing with
+% black background and light text, suitable for command-line snippets.
+\RequirePackage{tcolorbox}
+\tcbuselibrary{listings,skins}
+\RequirePackage{listings}
+
+\definecolor{terminalbg}{RGB}{0,0,0}
+\definecolor{terminaltext}{RGB}{240,240,240}
+
+\newtcblisting{terminal}{
+  listing engine=listings,
+  enhanced,
+  colback=terminalbg,
+  colframe=terminalbg,
+  coltext=terminaltext,
+  boxrule=0pt,
+  arc=1.5mm,
+  left=3mm,
+  right=3mm,
+  top=2mm,
+  bottom=2mm,
+  listing only,
+  listing options={
+    basicstyle=\ttfamily\footnotesize\color{terminaltext},
+    identifierstyle=\color{terminaltext},
+    keywordstyle=\color{terminaltext},
+    commentstyle=\color{terminaltext},
+    stringstyle=\color{terminaltext},
+    backgroundcolor=\color{terminalbg},
+    columns=fullflexible,
+    breaklines=true,
+    keepspaces=true,
+    showstringspaces=false,
+    upquote=true,
+    numbers=none,
+    frame=none,
+    rulecolor=\color{terminalbg},
+    literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+      {ü}{{\"u}}1 {Ü}{{\"U}}1
+      {¿}{{\textquestiondown}}1 {¡}{{\textexclamdown}}1
+  }
+}
+
+% --- File listing blocks (pixi.toml, .repos...) ---
+% Light box for file excerpts, as opposed to \terminal (command-line snippets).
+% Plain listings: no syntax highlighting.
+\newtcblisting{filelisting}{
+  listing engine=listings,
+  enhanced,
+  colback=white,
+  colframe=tu-blue!40,
+  boxrule=0.4pt,
+  arc=1mm,
+  left=2mm,
+  right=2mm,
+  top=1mm,
+  bottom=1mm,
+  listing only,
+  listing options={
+    basicstyle=\ttfamily\scriptsize,
+    columns=fullflexible,
+    breaklines=true,
+    keepspaces=true,
+    showstringspaces=false,
+    upquote=true,
+    frame=none,
+  }
+}
+
+\newif\ifbeamer@secheader
+\beamer@secheaderfalse
+
+%\DeclareOptionBeamer{secheader}{\beamer@secheadertrue}
+\ProcessOptionsBeamer
+
+\useoutertheme[footline=authorinstitutetitle,subsection=false]{smoothbars}
+% No sections in a short talk: drop the headline bar (section navigation) of smoothbars
+\setbeamertemplate{headline}{}
+\setbeamerfont{section in head/foot}{size=\tiny}
+\setbeamerfont{subsection in head/foot}{size=\tiny}
+\makeatletter % [add curpage/total page at the bottom](http://tex.stackexchange.com/questions/100838/beamer-dresden-theme-miniframes-appeareance-and-frame-number-insertion)
+\newcommand{\frameofframes}{/}
+\newcommand{\setframeofframes}[1]{\renewcommand{\frameofframes}{#1}}
+\setbeamertemplate{footline} 
+  {%
+    \begin{beamercolorbox}[colsep=1.5pt]{upper separation line foot}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{author in head/foot}%
+      \leavevmode{\usebeamerfont{author in head/foot}\insertshortauthor}%
+      \hfill%
+      {\usebeamerfont{institute in head/foot}\usebeamercolor[fg]{institute in head/foot}\insertshortinstitute}%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+      {\usebeamerfont{title in head/foot}\insertshorttitle}%
+      \hfill%
+      {\usebeamerfont{frame number}\usebeamercolor[fg]{frame number}\insertframenumber~\frameofframes~\inserttotalframenumber}
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[colsep=1.5pt]{lower separation line foot}
+    \end{beamercolorbox}
+  }
+\makeatother
+
+\useinnertheme{circles}
+
+%\useoutertheme{default}
+%\useinnertheme[shadow=true]{rounded}
+
+%
+\xdefinecolor{tu-orange}{RGB}{255,141,22}
+\xdefinecolor{tu-blue}{RGB}{19,83,138}
+
+%RGB TU Blue  #13538a %RGB 19,83,138
+%RGB TU Orange  %RGB 255, 141, 22
+\setbeamercolor{footline}{bg=tu-blue}
+\setbeamercolor{frametitle}{bg=tu-blue,fg=white}
+\setbeamercolor{title}{bg=tu-blue}
+\setbeamerfont{frametitle}{size=\large}
+%\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{caption}[numbered]
+
+\setbeamercolor{palette primary}{use=structure,fg=white,bg=structure.fg}
+\setbeamercolor{palette secondary}{use=structure,fg=white,bg=structure.fg!75!black}
+\setbeamercolor{palette tertiary}{use=structure,fg=white,bg=structure.fg!50!black}
+\setbeamercolor{palette quaternary}{fg=white,bg=structure.fg!50!black}
+%\setbeamercolor*{sidebar}{use=structure,bg=structure.fg}
+\setbeamercolor{titlelike}{parent=palette primary}
+
+%% try
+\setbeamercolor{block title}{bg=tu-blue,fg=white}
+\setbeamercolor{block body}{bg=tu-blue!6}
+\setbeamercolor{block title alerted}{bg=tu-orange!85!black,fg=white}
+\setbeamercolor{block body alerted}{bg=tu-orange!8}
+\setbeamercolor*{block title example}{use={normal text,example text},bg=white,fg=tu-blue}
+\setbeamercolor{fine separation line}{}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{palette sidebar primary}{use=normal text,fg=normal text.fg}
+\setbeamercolor{palette sidebar quaternary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette sidebar secondary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette sidebar tertiary}{use=normal text,fg=normal text.fg}
+%\setbeamercolor{palette sidebar quaternary}{fg=white}
+\setbeamercolor{section in sidebar}{fg=brown}
+\setbeamercolor{section in sidebar shaded}{fg=grey}
+\setbeamercolor{separation line}{}
+\setbeamercolor{sidebar}{bg=tu-blue}
+\setbeamercolor{sidebar}{parent=palette primary}
+\setbeamercolor{structure}{fg=tu-blue}
+\setbeamercolor{subsection in sidebar}{fg=brown}
+\setbeamercolor{subsection in sidebar shaded}{fg=grey}
+% Short talk: no automatic table-of-contents slides
+\AtBeginSection[]{}
+\AtBeginSubsection[]{}
+
+\mode
+<all>

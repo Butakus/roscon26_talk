@@ -1,0 +1,3 @@
+# Packages kept in ros2_ws even if the overlay does not depend on them:
+# the usual command line tools (ros2 run, node, topic, lifecycle, launch...)
+ros2cli_common_extensions

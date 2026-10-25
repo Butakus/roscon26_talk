@@ -1,0 +1,20 @@
+# "Just use it": prebuilt EasyNav from the IRL channel, no source code involved.
+# Taken from https://easynavigation.github.io/0.5.0/build_install/binaries.html
+[workspace]
+name = "easynav-rolling"
+# EasyNav's channel first: Pixi takes each package from the first channel that has it
+channels = [
+  "https://prefix.dev/fmrico/irl-rolling",
+  "https://prefix.dev/robostack-rolling",
+  "https://prefix.dev/conda-forge",
+]
+# The IRL channel only publishes EasyNav for linux-64
+platforms = ["linux-64"]
+
+[dependencies]
+ros-rolling-easynav = "*"
+# ros2 run, ros2 node, ros2 lifecycle... (not pulled in by easynav itself)
+ros-rolling-ros2cli-common-extensions = "*"
+
+[tasks]
+run = {cmd = "ros2 run easynav_system system_main --ros-args --params-file ../../../common/params/dummy.params.yaml", description = "Run EasyNav with the Dummy* plugins"}

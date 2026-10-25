@@ -1,0 +1,16 @@
+# Conan demo: ros-kilted from ros-conan (variant "desktop") ships cv_bridge and
+# pcl_conversions, but not vision_msgs, so it is built in the workspace,
+# pinned to the version released in the kilted rosdistro.
+repositories:
+  EasyNavigation:
+    type: git
+    url: https://github.com/EasyNavigation/EasyNavigation.git
+    version: kilted
+  ThirdParty/yaets:
+    type: git
+    url: https://github.com/fmrico/yaets.git
+    version: kilted
+  ThirdParty/vision_msgs:
+    type: git
+    url: https://github.com/ros-perception/vision_msgs.git
+    version: 4.2.0

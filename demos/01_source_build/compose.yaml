@@ -1,0 +1,34 @@
+# The same setup as the devcontainer, without VS Code:
+#   docker compose run --rm dev      # shell in /opt/overlay_ws (target dever)
+#   docker compose --profile ci build test   # CI-like image: builds the overlay and runs the tests
+services:
+  dev:
+    build:
+      context: .
+      target: dever
+    image: easynav:source-dever
+    volumes:
+      - ./src/EasyNavigation:/opt/overlay_ws/src/EasyNavigation:z
+      - overlay:/opt/overlay_ws
+      - ccache:/tmp/.ccache
+      - ../../common:/opt/common:ro,z
+    environment:
+      OVERLAY_MIXINS: release ccache lld compile-commands
+      CCACHE_DIR: /tmp/.ccache
+    working_dir: /opt/overlay_ws
+    network_mode: host
+    ipc: host
+    stdin_open: true
+    tty: true
+  test:
+    build:
+      context: .
+      target: overlay_tester
+      args:
+        RUN_TESTS: "1"
+    image: easynav:source-tester
+    profiles: [ci]
+
+volumes:
+  overlay:
+  ccache:

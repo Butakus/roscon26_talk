@@ -1,0 +1,19 @@
+# Based on ros-conan/profiles/ros
+include(default)
+
+[settings]
+compiler.cppstd=17
+
+[options]
+# REP-2000 reference Python for kilted. Must match the interpreter that runs colcon.
+ros-kilted/*:python_version=3.12
+
+[tool_requires]
+cmake/3.29.3
+
+{% if platform.system() == "Linux" %}
+[conf]
+# "check" only reports missing system packages (glu, X11 dev headers...).
+# Switch to "install" + sudo=True to let Conan install them with dnf/apt/pacman.
+tools.system.package_manager:mode=check
+{% endif %}

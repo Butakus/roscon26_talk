@@ -1,0 +1,9 @@
+# rosdep keys built from source in ros2_ws, or left out on purpose
+# (based on navigation2's tools/skip_keys.txt)
+fastcdr
+urdfdom_headers
+rti-connext-dds-7.7.0
+# RMWs removed from ros2_ws (see rmw-ignore.txt)
+rmw_connextdds
+rmw_cyclonedds_cpp
+rmw_zenoh_cpp

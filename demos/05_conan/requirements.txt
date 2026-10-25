@@ -1,0 +1,47 @@
+# Python side of the workspace. Must be installed in a Python 3.12 venv:
+# the same interpreter ros-kilted was built for (profiles/ros: python_version).
+# Pins taken from the ros-kilted recipe in ros-conan (PIP_RUNTIME_TOOLS / _PIP_BUILD_ONLY).
+
+# Build tools
+colcon-common-extensions
+catkin_pkg==1.0.0
+empy>=4.0,<5
+lark==1.1.9
+numpy==1.26.4
+setuptools==68.1.2
+vcstool==0.3.0
+PyYAML==6.0.1
+lxml==5.2.1
+packaging==24.0
+
+# ros2cli runtime: verbs whose imports fail are silently dropped
+# (e.g. "ros2 node list" -> KeyError: 'list' without psutil)
+argcomplete==3.1.4
+cryptography==41.0.7
+docutils==0.20.1
+fastjsonschema==2.19.0
+psutil==5.9.8
+python-dateutil==2.8.2
+
+# Linters and tests (ament_lint_common, ament_cmake_pytest)
+flake8==7.0.0
+flake8-blind-except==0.2.1
+flake8-builtins==2.1.0
+flake8-class-newline==1.6.0
+flake8-comprehensions==3.14.0
+flake8-deprecated==2.2.1
+flake8-docstrings==1.6.0
+flake8-import-order==0.18.2
+flake8-quotes==3.4.0
+mypy==1.9.0
+pycodestyle==2.11.1
+pydocstyle==6.3.0
+pyflakes==3.2.0
+pytest==7.4.4
+pytest-cov==4.1.0
+pytest-timeout==2.2.0
+
+# easynav_tools runtime (rosdep: python3-platformdirs, python3-rich, python3-typing-extensions)
+platformdirs
+rich
+typing_extensions==4.10.0
