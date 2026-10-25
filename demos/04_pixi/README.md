@@ -1,7 +1,10 @@
 # Pixi: one lockfile, three operating systems
 
-> **Persona:** the corporate developer stuck on Windows without admin rights, and the
-> macOS user who just wants `ros2` to work. Also any Linux user outside Ubuntu.
+> **Fits:** all five personas.
+> - Sara (Windows without admin rights).
+> - Lucía (macOS, expects something like `npm install`).
+> - Javi and Marta (no root, nothing installed on the system).
+> - Even Paco on Ubuntu: several distros side by side and a lockfile.
 
 [Pixi](https://pixi.sh) installs ROS 2 and every dependency as conda packages
 ([RoboStack](https://robostack.github.io/)) into a `.pixi/` folder next to your code.

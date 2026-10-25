@@ -1,7 +1,7 @@
 # The classic way: Ubuntu + apt
 
-> **Persona:** none. This is the reference point, the "install Ubuntu and forget about
-> it" that the talk starts from.
+> **Fits:** Paco (Ubuntu). It's the only persona apt works for at all. This is the
+> reference point, the "install Ubuntu and forget about it" that the talk starts from.
 
 On a Tier 1 platform ([REP-2000](https://www.ros.org/reps/rep-2000.html)), ROS 2 comes
 as official binary packages. For rolling, that platform is Ubuntu 26.04. This is the

@@ -1,8 +1,11 @@
 # ROS 2 from source, the navigation2 way: everything in Docker
 
-> **Persona:** the contributor. Someone who works against the **latest ROS 2 code**
-> (unreleased fixes, a patch in `rclcpp`, a not-yet-released distro), and wants the
-> whole team and the CI to get exactly the same result.
+> **Fits:**
+> - **Paco:** to test his projects against the **latest ROS 2 code** (unreleased fixes,
+>   a patch in `rclcpp`, a not-yet-released distro), with the same image in his CI.
+> - **Javi** and **Marta** too.
+>
+> Lucía only through Docker Desktop's VM. Not Sara: Docker needs admin rights.
 
 ROS 2 is built **from source** from `ros2.repos`, but inside a multi-stage image instead
 of directly on your system. This copies navigation2's

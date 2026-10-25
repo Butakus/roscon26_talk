@@ -1,7 +1,8 @@
 # Distrobox: Ubuntu inside your Fedora/Arch, with no barriers
 
-> **Persona:** the pragmatic Fedora (or Arch, or openSUSE…) user who wants ROS 2 *now*,
-> from official packages, without leaving their desktop.
+> **Fits:** Marta (Bluefin ships with distrobox), Javi (Arch) and Paco (another
+> Ubuntu/ROS distro without touching his own). Anyone on Linux who wants ROS 2 *now*,
+> from official packages, without leaving their desktop. Linux only: not for Sara or Lucía.
 
 [Distrobox](https://distrobox.it/) creates a container (Podman or Docker) that is
 **integrated with the host**: same user, same `$HOME`, same network, display and USB

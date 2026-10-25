@@ -1,7 +1,8 @@
 # Conan: ROS 2 as one more C++ dependency
 
-> **Persona:** the corporate developer whose company already manages its C++
-> dependencies with Conan (and its own Artifactory), on Windows, macOS or Linux.
+> **Fits:** any of the five, with caveats (kilted only, and the first build compiles
+> ROS 2). It shines when the project is C++ and already lives in the Conan world, e.g. a
+> company with its own Conan server: ROS 2 becomes one more dependency.
 
 [ros-conan](https://github.com/conan-io/ros-conan) builds ROS 2 **from source** with
 Conan: no `rosdep`, `apt`, `brew` or `choco`. Third-party libraries (OpenCV, PCL, Boost,

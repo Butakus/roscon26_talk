@@ -1,7 +1,8 @@
 # Containers: Docker / Podman + Dev Containers
 
-> **Persona:** the corporate Windows developer (Docker Desktop + WSL2) and any team that
-> wants everyone on exactly the same Ubuntu, whatever their laptop runs.
+> **Fits:** Paco, Javi and Marta. On Bluefin, containers are how you're meant to work.
+> Lucía only through Docker Desktop's VM. Not Sara: WSL2 and Docker Desktop need admin
+> rights. Also for any team that wants everyone on exactly the same Ubuntu.
 
 The image holds Ubuntu 26.04 + ROS 2 rolling + every dependency of EasyNav (installed
 with `rosdep`). **The code is not inside the image**: the repository is bind-mounted,

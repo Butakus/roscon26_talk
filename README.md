@@ -7,16 +7,35 @@ The same project, [EasyNavigation](https://github.com/EasyNavigation/EasyNavigat
 [yaets](https://github.com/fmrico/yaets), is built, tested and run in every environment,
 so each comparison runs the same workload.
 
-## Who are you?
+## Meet the personas
 
-| Persona | System | Main demo | Alternatives |
+Five fictional developers, each with a different constraint. The options aren't tied to
+one persona: most of them have more than one valid choice.
+
+| Name | System | Profile | Constraint |
 |---|---|---|---|
-| 🏢 **Corporate dev**: "Windows only, and no admin rights" | Windows 11 | [Pixi](demos/04_pixi/) | [Containers](demos/02_containers/) (WSL2) · [Conan](demos/05_conan/) if the company already uses it |
-| 🍎 **Mac user**: wants `ros2` to just work | macOS (Apple Silicon) | [Pixi](demos/04_pixi/) | [Conan](demos/05_conan/) · [Containers](demos/02_containers/) (with networking/GUI caveats) |
-| 🐧 **"I use Arch, BTW"**: everything native or nothing | Arch Linux | [Distrobox](demos/03_distrobox/) | Nix (see below) · ROS 2 from source on the system (slides only, not recommended) |
-| 🔧 **The contributor**: the latest ROS 2 from source, same setup as CI | any (Docker/Podman) | [From source, nav2-style](demos/01_source_build/) | [Containers](demos/02_containers/) |
-| 🎩 **The Fedora pragmatist** | Fedora | [Distrobox](demos/03_distrobox/) | [Containers](demos/02_containers/) (Podman) · [Pixi](demos/04_pixi/) |
-| 📏 **Baseline** | Ubuntu 26.04 | [Classic apt](demos/00_classic_ubuntu/) | — |
+| **Paco** | Ubuntu | Maintains open source ROS 2 projects and doesn't want any hassle, so he uses Ubuntu | Has what everybody uses. But apt can't pin versions or install several distros side by side |
+| **Sara** | Windows | Works at a big company. For security reasons Linux is banned, and her Windows machine has no admin rights | Windows without admin rights or VMs |
+| **Lucía** | macOS | Comes from web development: `npm install` and off you go. Her Mac is her work tool | macOS; she expects something like npm |
+| **Javi** | Arch Linux | "I use Arch, BTW". Builds his own kernel and wants the latest version of everything | A distro ROS doesn't even mention |
+| **Marta** | Bluefin | Uses Bluefin, an immutable Fedora: the base system is read-only | Nothing gets installed on the system |
+
+### Which one do I choose?
+
+| | [apt](demos/00_classic_ubuntu/) | [Containers](demos/02_containers/) | [Distrobox](demos/03_distrobox/) | [Docker from source](demos/01_source_build/) | [Pixi](demos/04_pixi/) | [Conan](demos/05_conan/) |
+|---|---|---|---|---|---|---|
+| Paco (Ubuntu) | ✅ | ✅ | ✅ | ✅ | ✅ | 〰️ |
+| Sara (Windows) | ❌ | ❌ | ❌ | ❌ | ✅ | 〰️ |
+| Lucía (macOS) | ❌ | 〰️ | ❌ | 〰️ | ✅ | 〰️ |
+| Javi (Arch) | ❌ | ✅ | ✅ | ✅ | ✅ | 〰️ |
+| Marta (Bluefin) | ❌ | ✅ | ✅ | ✅ | ✅ | 〰️ |
+
+✅ fits · 〰️ with caveats (a VM, USB/GUI access, kilted only) · ❌ doesn't fit (WSL2 and
+Docker Desktop need admin rights).
+
+Almost everyone has **more than one** option. Pixi is the only one that fits all five.
+Building ROS 2 natively on the host (no containers) only appears in the slides, as
+"possible, but not recommended".
 
 ## The demo (same everywhere)
 
@@ -63,8 +82,8 @@ inside `rcl_logging_spdlog`). See [its README](demos/05_conan/README.md#known-is
 
 [nix-ros-overlay](https://github.com/lopsided98/nix-ros-overlay) packages ROS 2 for Nix:
 `nix develop` gives a reproducible environment with a binary cache, on NixOS and on any
-Linux (and partly macOS). It's the natural next step for the "Arch BTW" persona, but it
-has no demonstrator here.
+Linux (and partly macOS). It's a natural next step for someone like Javi, but it has no
+demonstrator here.
 
 ## Lessons learned (for the talk)
 
