@@ -62,6 +62,14 @@ Francisco Miguel Moreno\\
 %-------------------------------------------------
 \begin{frame}
   \titlepage
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=south east, inner sep=0pt] at ([xshift=-0.8cm, yshift=1.0cm]current page.south east)
+      {\includegraphics[height=2.0cm]{figs/RosConES2026_small.png}};
+    \node[anchor=south west, inner sep=0pt] (urjc) at ([xshift=1.0cm, yshift=1.0cm]current page.south west)
+      {\includegraphics[width=2.1cm]{figs/logo_urjc.png}};
+    \node[anchor=south west, inner sep=0pt] at ([yshift=0.3cm]urjc.north west)
+      {\includegraphics[width=2.1cm]{figs/logo_irl.png}};
+  \end{tikzpicture}
 \end{frame}
 
 %-------------------------------------------------
@@ -95,14 +103,13 @@ Otras distros\ldots & {\color{halfgray} no aparecen} \\
 \end{frame}
 
 %-------------------------------------------------
-\begin{frame}{Conoce a\ldots}
+\begin{frame}{¿Quién se sale del camino recomendado?}
 \centering
 \begin{tikzpicture}[node distance=0.2cm]
-\node[persona] (paco) {\perfil{Paco}{Mantiene proyectos open source de ROS~2 y no quiere líos: usa Ubuntu.}{tiene lo que usa todo el mundo}};
-\node[persona, right=of paco] (sara) {\perfil{Sara}{Empresa grande. Por seguridad, Linux prohibido y Windows sin admin.}{Windows sin admin ni VMs}};
-\node[persona, right=of sara] (lucia) {\perfil{Lucía}{Viene del desarrollo web: \texttt{npm install} y a funcionar. Su Mac es su herramienta.}{macOS; quiere algo tipo npm}};
-\node[persona, below=of paco, xshift=2.35cm] (javi) {\perfil{Javi}{Usa ``Arch, BTW''. Compila su kernel y lo quiere todo en la última versión.}{una distro que ROS ni menciona}};
-\node[persona, right=of javi] (marta) {\perfil{Marta}{Usa Bluefin, una Fedora inmutable: el sistema base es de solo lectura.}{nada se instala en el sistema}};
+\node[persona] (javi) {\perfil{Javi}{Usa ``Arch, BTW''. Compila su kernel y lo quiere todo en la última versión.}{una distro que ROS ni menciona}};
+\node[persona, right=of javi] (sara) {\perfil{Sara}{Empresa grande. Por seguridad, Linux prohibido y Windows sin admin.}{Windows sin admin ni VMs}};
+\node[persona, below=of javi] (lucia) {\perfil{Lucía}{Viene del desarrollo web: \texttt{npm install} y a funcionar. Su Mac es su herramienta.}{macOS; quiere algo tipo npm}};
+\node[persona, right=of lucia] (charlie) {\perfil{Charlie}{Usa Bluefin, una Fedora inmutable: el sistema base es de solo lectura.}{nada se instala en el sistema}};
 \end{tikzpicture}
 \end{frame}
 
@@ -136,6 +143,35 @@ Otras distros\ldots & {\color{halfgray} no aparecen} \\
 % \end{frame}
 
 %-------------------------------------------------
+\begin{frame}{Las opciones}
+\begin{columns}[T]
+\column{0.31\textwidth}
+\begin{block}{En tu sistema}
+\begin{itemize}
+  \item \textbf{apt} en Ubuntu
+  \item \textbf{Desde fuentes} en tu distro
+\end{itemize}
+\end{block}
+\column{0.31\textwidth}
+\begin{block}{Contenedores}
+\begin{itemize}
+  \item \textbf{Docker / Podman} + devcontainer
+  \item \textbf{Distrobox}
+  \item \textbf{Fuentes} dentro del contenedor
+\end{itemize}
+\end{block}
+\column{0.31\textwidth}
+\begin{block}{Gestores de paquetes}
+\begin{itemize}
+  \item \textbf{Pixi} (RoboStack)
+  \item \textbf{Conan}
+\end{itemize}
+\end{block}
+\end{columns}
+\referencia{Bonus: Nix (nix-ros-overlay), reproducible y con lockfile.}
+\end{frame}
+
+%-------------------------------------------------
 \begin{frame}{El camino clásico / recomendado}
 \begin{columns}[T]
 \column{0.48\textwidth}
@@ -165,12 +201,13 @@ Ejemplo en Fedora 44:
 \column{0.48\textwidth}
 \textbf{Docker / Podman + devcontainer}
 \begin{itemize}
-  \item Ubuntu + ROS por apt + \texttt{rosdep}, en una imagen.
+  \item Ubuntu + ROS + \texttt{rosdep}, en una imagen.
+  \item ROS desde apt o compilado desde fuentes.
   \item El código se monta desde el host.
-  \item Windows (WSL2) y macOS, con una VM de por medio.
+  \item Windows y macOS, vía VM (Docker~Desktop).
 \end{itemize}
 \vspace{0.3em}
-{\small Imagen 5,3~GB · build 2,5~min}
+{\small Imagen 5,3~GB · build 2,5~min / 15~min}
 \column{0.5\textwidth}
 \textbf{Distrobox}
 \begin{terminal}
@@ -187,27 +224,27 @@ colcon build
 \end{frame}
 
 %-------------------------------------------------
-\begin{frame}{Desde fuentes, pero dentro de Docker}
-\begin{columns}[c]
-\column{0.55\textwidth}
-\centering
-\begin{tikzpicture}[node distance=0.12cm]
-\node[capa, fill=gray!10, draw=gray] (base) {\texttt{osrf/ros2:devel}\hfill{\scriptsize Herramientas, sin ROS}};
-\node[capa, above=of base] (ros) {\texttt{ros2\_ws}\hfill{\scriptsize ROS~2 rolling, 169 paquetes}};
-\node[capa, above=of ros] (under) {\texttt{underlay\_ws}\hfill{\scriptsize Dependencias}};
-\node[capa, above=of under, fill=orange!10, draw=orange!70!black] (over) {\texttt{overlay\_ws}\hfill{\scriptsize EasyNavigation}};
-\end{tikzpicture}
-\vspace{0.5em}
+% \begin{frame}{Desde fuentes, pero dentro de Docker}
+% \begin{columns}[c]
+% \column{0.55\textwidth}
+% \centering
+% \begin{tikzpicture}[node distance=0.12cm]
+% \node[capa, fill=gray!10, draw=gray] (base) {\texttt{osrf/ros2:devel}\hfill{\scriptsize Herramientas, sin ROS}};
+% \node[capa, above=of base] (ros) {\texttt{ros2\_ws}\hfill{\scriptsize ROS~2 rolling, 169 paquetes}};
+% \node[capa, above=of ros] (under) {\texttt{underlay\_ws}\hfill{\scriptsize Dependencias}};
+% \node[capa, above=of under, fill=orange!10, draw=orange!70!black] (over) {\texttt{overlay\_ws}\hfill{\scriptsize EasyNavigation}};
+% \end{tikzpicture}
+% \vspace{0.5em}
 
-{\small \texttt{ros2.repos} recortado con \lstinline|colcon list --packages-skip-up-to|}
-\column{0.43\textwidth}
-\begin{itemize}
-  \item Todo ROS~2 compilado desde fuentes, sobre Ubuntu y dentro de la imagen.
-  \item Una imagen multi-etapa para \textbf{desarrollo} (devcontainer) y para \textbf{CI}.
-  \item 15~min desde cero; ROS~2 en 2,5~min con ccache.
-\end{itemize}
-\end{columns}
-\end{frame}
+% {\small \texttt{ros2.repos} recortado con \lstinline|colcon list --packages-skip-up-to|}
+% \column{0.43\textwidth}
+% \begin{itemize}
+%   \item Todo ROS~2 compilado desde fuentes, sobre Ubuntu y dentro de la imagen.
+%   \item Una imagen multi-etapa para \textbf{desarrollo} (devcontainer) y para \textbf{CI}.
+%   \item 15~min desde cero; ROS~2 en 2,5~min con ccache.
+% \end{itemize}
+% \end{columns}
+% \end{frame}
 
 %-------------------------------------------------
 \begin{frame}[fragile]{Pixi: un lockfile, tres sistemas operativos}
@@ -235,6 +272,10 @@ pixi install && pixi run demo
   \item 1,5~min de setup.
 \end{itemize}
 \vspace{0.3em}
+\begin{mensaje}
+{\small Workshop de Pixi + ROS~2:}\\
+{\scriptsize\ttfamily\href{https://github.com/IntelligentRoboticsLabs/workshop-pixi}{github.com/IntelligentRoboticsLabs/\\workshop-pixi}\par}
+\end{mensaje}
 \end{columns}
 \end{frame}
 
@@ -271,36 +312,36 @@ ros-kilted/*:variant=desktop
 \end{frame}
 
 %-------------------------------------------------
-\begin{frame}[fragile]{Fijar versiones: lo que apt no puede hacer}
-\begin{columns}[T]
-\column{0.32\textwidth}
-\textbf{Desde fuentes}
-\begin{filelisting}
-yaets:
-  type: git
-  url: .../yaets.git
-  version: 1.2.0
-\end{filelisting}
-\column{0.32\textwidth}
-\textbf{Pixi}
-\begin{filelisting}
-- conda: .../rclcpp-
-    33.0.4-...conda
-  sha256: 7363917...
-\end{filelisting}
-\column{0.32\textwidth}
-\textbf{Conan}
-\begin{filelisting}
-ros-kilted/2026.06.17
-  #49b158999daa...
-conan lock create .
-\end{filelisting}
-\end{columns}
-\vfill
-\begin{alertblock}{apt (y las imágenes que se construyen con apt)}
-El repositorio de ROS solo guarda la última versión publicada: \textbf{reconstruir hoy $\neq$ reconstruir dentro de 6 meses.}
-\end{alertblock}
-\end{frame}
+% \begin{frame}[fragile]{Fijar versiones: lo que apt no puede hacer}
+% \begin{columns}[T]
+% \column{0.32\textwidth}
+% \textbf{Desde fuentes}
+% \begin{filelisting}
+% yaets:
+%   type: git
+%   url: .../yaets.git
+%   version: 1.2.0
+% \end{filelisting}
+% \column{0.32\textwidth}
+% \textbf{Pixi}
+% \begin{filelisting}
+% - conda: .../rclcpp-
+%     33.0.4-...conda
+%   sha256: 7363917...
+% \end{filelisting}
+% \column{0.32\textwidth}
+% \textbf{Conan}
+% \begin{filelisting}
+% ros-kilted/2026.06.17
+%   #49b158999daa...
+% conan lock create .
+% \end{filelisting}
+% \end{columns}
+% \vfill
+% \begin{alertblock}{apt (y las imágenes que se construyen con apt)}
+% El repositorio de ROS solo guarda la última versión publicada: \textbf{reconstruir hoy $\neq$ reconstruir dentro de 6 meses.}
+% \end{alertblock}
+% \end{frame}
 
 %-------------------------------------------------
 \begin{frame}{Comparativa}
@@ -321,30 +362,30 @@ Integración con el host & nativa & baja & baja & alta & alta & alta \\
 \end{frame}
 
 %-------------------------------------------------
-\begin{frame}{¿Cuál elijo?}
-\centering
-\begin{tabular}{lcccccc}
-\toprule
- & \textbf{apt} & \textbf{Contenedor} & \textbf{Distrobox} & \textbf{Docker fuentes} & \textbf{Pixi} & \textbf{Conan} \\
-\midrule
-Paco {\scriptsize\color{halfgray} Ubuntu}  & \si & \si & \si & \si & \si & \parcial \\
-Sara {\scriptsize\color{halfgray} Windows}  & \no & \no & \no & \no & \si & \parcial \\
-Lucía {\scriptsize\color{halfgray} macOS} & \no & \parcial & \no & \parcial & \si & \parcial \\
-Javi {\scriptsize\color{halfgray} Arch}  & \no & \si & \si & \si & \si & \parcial \\
-Marta {\scriptsize\color{halfgray} Bluefin} & \no & \si & \si & \si & \si & \parcial \\
-\bottomrule
-\end{tabular}
+% \begin{frame}{¿Cuál elijo?}
+% \centering
+% \begin{tabular}{lcccccc}
+% \toprule
+%  & \textbf{apt} & \textbf{Contenedor} & \textbf{Distrobox} & \textbf{Docker fuentes} & \textbf{Pixi} & \textbf{Conan} \\
+% \midrule
+% Paco {\scriptsize\color{halfgray} Ubuntu}  & \si & \si & \si & \si & \si & \parcial \\
+% Sara {\scriptsize\color{halfgray} Windows}  & \no & \no & \no & \no & \si & \parcial \\
+% Lucía {\scriptsize\color{halfgray} macOS} & \no & \parcial & \no & \parcial & \si & \parcial \\
+% Javi {\scriptsize\color{halfgray} Arch}  & \no & \si & \si & \si & \si & \parcial \\
+% Charlie {\scriptsize\color{halfgray} Bluefin} & \no & \si & \si & \si & \si & \parcial \\
+% \bottomrule
+% \end{tabular}
 
-\vspace{0.4em}
-{\scriptsize\color{halfgray} \si{} encaja \quad \parcial{} con matices (VM, USB, GUI, solo kilted) \quad \no{} no encaja (WSL2 y Docker Desktop piden admin)}
-\vfill
-Casi todos tienen \textbf{más de una} opción; Pixi es la única que encaja con los cinco.
-\vfill
-\begin{mensaje}
-Si necesitas reproducibilidad, necesitas un \textbf{lockfile} (o fuentes fijadas).
-\end{mensaje}
-\referencia{Bonus: Nix (nix-ros-overlay), reproducible y con lockfile.}
-\end{frame}
+% \vspace{0.4em}
+% {\scriptsize\color{halfgray} \si{} encaja \quad \parcial{} con matices (VM, USB, GUI, solo kilted) \quad \no{} no encaja (WSL2 y Docker Desktop piden admin)}
+% \vfill
+% Casi todos tienen \textbf{más de una} opción; Pixi es la única que encaja con los cinco.
+% \vfill
+% \begin{mensaje}
+% Si necesitas reproducibilidad, necesitas un \textbf{lockfile} (o fuentes fijadas).
+% \end{mensaje}
+% \referencia{Bonus: Nix (nix-ros-overlay), reproducible y con lockfile.}
+% \end{frame}
 
 %-------------------------------------------------
 \begin{frame}{¿Preguntas?}

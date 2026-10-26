@@ -10,6 +10,6 @@ tectonic = "*"
 
 [tasks.slides]
 cmd = "tectonic -X compile slides.tex"
-inputs = ["slides.tex", "*.sty"]
+inputs = ["slides.tex", "*.sty", "figs/*"]
 outputs = ["slides.pdf"]
 description = "Compile slides.tex to slides.pdf"

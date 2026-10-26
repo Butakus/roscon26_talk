@@ -83,6 +83,20 @@
 \useoutertheme[footline=authorinstitutetitle,subsection=false]{smoothbars}
 % No sections in a short talk: drop the headline bar (section navigation) of smoothbars
 \setbeamertemplate{headline}{}
+% smoothbars' frametitle starts with a shading strip that blends from the
+% (now removed) headline: redefine it without that strip
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip%
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=.3cm,rightskip=.3cm plus1fil,vmode]{frametitle}
+    \vskip1ex
+    \usebeamerfont*{frametitle}\insertframetitle%
+    \ifx\insertframesubtitle\@empty%
+      \strut\par%
+    \else
+      \par{\usebeamerfont*{framesubtitle}{\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}\strut\par}%
+    \fi%%
+  \end{beamercolorbox}%
+}
 \setbeamerfont{section in head/foot}{size=\tiny}
 \setbeamerfont{subsection in head/foot}{size=\tiny}
 \makeatletter % [add curpage/total page at the bottom](http://tex.stackexchange.com/questions/100838/beamer-dresden-theme-miniframes-appeareance-and-frame-number-insertion)
